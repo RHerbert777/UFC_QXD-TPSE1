@@ -1,1 +1,13 @@
-setenv app "setenv autoload no; setenv ipaddr 192.168.1.2; setenv serverip 192.168.1.1; tftp 0x80000000 download.bin; echo *** Iniciando Bare-Metal ***; go 0x80000000"
+//Caregar para o tftp
+sudo cp bin/app_baremetal.bin /srv/tftpboot/
+
+//Iniciando
+setenv autoload no
+
+setenv ipaddr 192.168.1.2
+
+setenv serverip 192.168.1.1
+
+tftp 0x80000000 app_baremetal.bin
+
+go 0x80000000

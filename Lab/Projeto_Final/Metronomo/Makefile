@@ -8,7 +8,7 @@ CFLAGS = -mcpu=cortex-a8 -O2 -g -Wall -Iinc
 LDFLAGS = -T src/memmap.ld
 
 SRCS = src/startup.s \
-src/main.c
+$(wildcard src/*.c)
 
 OBJS = $(addprefix obj/, $(notdir $(SRCS:.c=.o)))
 OBJS := $(OBJS:.s=.o)
@@ -30,7 +30,7 @@ $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
 
 clean:
-	rm -f obj/*.o bin/*.dump bin/*.elf bin/*.bin4
+	rm -f obj/*.o bin/*.dump bin/*.elf bin/*.bin
 
 deploy: $(TARGET).bin
 	cp $(TARGET).bin /srv/tftpboot/download.bin

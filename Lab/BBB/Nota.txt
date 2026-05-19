@@ -1,0 +1,11 @@
+Utilizando a BBB:
+    a BBB por padrão em baremetal vem setado todos seu pinos e modulos zerados, para iniciarmos uma aplicação Utilizando
+    ela primeiro devemos inicialiar o pino que queremos por exemplo o GPIO1, lembrando que cada pino é multiplexado e estamos
+    ativando praticamente o bloco inteiro, deve ser procurada em CM_PER_GPIO1_CLKCTRL la no capitulo 8.
+
+OR (|) / (|=) A = A | B 
+AND (&) / (&=) A = A & B
+XOR (^) / (^=) A = A ^ B
+NOT(~) / (~=) A = ~A
+SHIFT LEFT(<<) / (<<=) A = A << B
+SHIFT RIGHT(>>) / (>>=) A = A >> B

@@ -1,0 +1,6 @@
+SOC  - (System on a ship - sistema em um chip)
+PRCM - (Power, Reset, and Clock Management - Gerenciamento de Energia, Reset e Clock)
+REGS - (Registers - Registradores)
+CKM / CM (Clock module)
+PER - (Peripheral - Periférico)
+CLKCTRL - (Clock Control - Controle de Clock)
