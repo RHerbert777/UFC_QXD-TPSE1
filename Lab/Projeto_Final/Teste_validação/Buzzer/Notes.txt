@@ -1,0 +1,22 @@
+Utilizaremos o pino expansor P9.14 para o controle do nosso pwm do buzzer que é o EHRPWM1A,
+equivalnete a: 
+PWMSS1 0x4830_0000
+
+Ativar o PCRM para PWMSS1 - FINALIZADO
+
+Inicialização ------------------------------------------------------
+Offsets: 
+SYSCONFIG (0x04) - Configuraçoes gerais do pwm - FINALIZADO
+STANDBYMODE = 1h (No-standby)
+IDLEMODE = 1h (No-idle)
+FREEEMU = 1h (Free Emulation)
+BIN =  010110
+
+CLKCONFIG (0x08) - interuptor para ligarmos e desligarmos o pwm - FINALIZADO
+Utilizaremos o modulo ePWMCLK_EN para gerar as ondas
+
+CLkSTATUS (0X0C) - Confirmar que o PCRM esta funcionando - FINALIZADO
+
+Notas ---------------------------------------------------------------
+Para nossa aplicação de bpm precisamos certificar quanto tempo sera o som e quanto tempo sera a pausa usaremos 
+maquina de estados
