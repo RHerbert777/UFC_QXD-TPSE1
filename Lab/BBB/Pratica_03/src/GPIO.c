@@ -1,5 +1,5 @@
-#include "BBB_REGS.h"
-#include "Func.h"
+#include "GPIO_REGS.h"
+#include "GPIO.h"
 #include <stdint.h>
 
 //Desabilita o whach dog timmer 
@@ -22,6 +22,7 @@ void AT_MOD(unsigned int MODULO) {
     while ((HWREG(SOC_CM_PER_REGS + MODULO) & (3 << 16)) != 0) {}
 }
 
+//Seta a configuração especifica que garante a filtragem do ruido
 void GPIO_DEBOUNCE_ENABLE(unsigned int MODULO) {
     HWREG(SOC_CM_PER_REGS + MODULO) |= (1 << 18);
 }

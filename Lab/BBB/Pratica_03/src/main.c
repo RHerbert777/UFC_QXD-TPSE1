@@ -6,8 +6,8 @@
 *  
 */
 #include <stdint.h>
-#include "BBB_REGS.h"
-#include "Func.h"
+#include "GPIO_REGS.h"
+#include "GPIO.h"
 
 int main(){
     //CONFIG WATCH DOG

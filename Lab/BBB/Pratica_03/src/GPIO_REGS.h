@@ -1,5 +1,5 @@
-#ifndef _BBB_REGS_H_
-#define _BBB_REGS_H_
+#ifndef _GPIO_REGS_H_
+#define _GPIO_REGS_H_
 
 //whach dog timmer
 #define SOC_WDT_1_REGS (0x44E35000)

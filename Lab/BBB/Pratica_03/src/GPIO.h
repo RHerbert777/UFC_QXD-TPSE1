@@ -1,6 +1,6 @@
-#ifndef FUNC_H
-#define FUNC_H
-#include "BBB_REGS.h"
+#ifndef GPIO_H
+#define GPIO_H
+#include "GPIO_REGS.h"
 #include <stdint.h>
 
 static void delay() {
