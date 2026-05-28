@@ -3,9 +3,7 @@ CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
 
-LIBGCC = $(shell $(CC) -print-libgcc-file-name)
-
-CFLAGS = -mcpu=cortex-a8 -O2 -g -Wall -Iinc 
+CFLAGS = -mcpu=cortex-a8 -O2 -g -Wall -Iinc
 
 LDFLAGS = -T src/memmap.ld
 
@@ -26,8 +24,7 @@ obj/%.o: src/%.s
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET).elf: $(OBJS)
-	# NOVA LINHA 2: Adiciona a variável $(LIBGCC) no final da linkagem
-	$(LD) $(LDFLAGS) $^ -o $@ $(LIBGCC)
+	$(LD) $(LDFLAGS) $^ -o $@
 
 $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) -O binary $< $@

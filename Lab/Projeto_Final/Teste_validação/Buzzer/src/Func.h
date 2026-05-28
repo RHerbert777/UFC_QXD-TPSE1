@@ -3,12 +3,11 @@
 #include "BBB_REGS.h"
 #include <stdint.h>
 
+//Usa procesamente para delay
+void delay(volatile unsigned int tempo);
+
 void disable_wdt(void);
 
-static void delay() {
-    volatile unsigned int ra;
-    for (ra = 0; ra < 1000000; ra++);
-}
 //Ativa o modulo PCRM de um modulo com o offser colocando 2 enable, pode tambem ativar o gpio
 void PRCM_ENABLE_MODE(uint32_t module_offset);
 

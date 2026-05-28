@@ -21,7 +21,7 @@
 #define PWMSS_CTRL (0x664)
 
 //PWM inicialização --------------------------------------------------
-#define SOC_PWMSS1_REGS     (0x48300000)
+#define SOC_PWMSS1_REGS  0x48302000
 #define CM_PER_EPWMSS1_CLKCTRL  (0x0CC) //ofset para iniciar o PCRM
 
 // 0x16 = No-Standby | No-Idle | Free Emulation] 010110
@@ -32,7 +32,7 @@
 #define PWMSS1_CLKSTATUS   (0x0C)
 
 // DEFINIÇÕES DO EHRPWM1
-#define SOC_EHRPWM1_REGS 0x48300200
+#define SOC_EHRPWM1_REGS 0x48302200
 #define TBCTL    0x00 
 #define TBPRD    0x0A 
 #define CMPA     0x12 

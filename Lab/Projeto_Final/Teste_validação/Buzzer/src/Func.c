@@ -1,7 +1,12 @@
 #include "BBB_REGS.h"
 #include "Func.h"
 #include <stdint.h>
-
+void delay(volatile unsigned int tempo) {
+    while(tempo--) {
+        // O loop vazio. O compilador não vai apagar isso 
+        // porque a variável 'tempo' foi declarada como volatile.
+    }
+}
 //Desabilita o whach dog timmer 
 void disable_wdt(void) {
     unsigned int addr_wspr = SOC_WDT_1_REGS + WDT_WSPR;
@@ -14,6 +19,7 @@ void disable_wdt(void) {
     HWREG(addr_wspr) = 0x5555;
 
     while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
+    return;
 }
 //Ativa o modulo PCRM de um modulo com o offser colocando 2 enable
 void PRCM_ENABLE_MODE(uint32_t module_offset) {
@@ -21,6 +27,7 @@ void PRCM_ENABLE_MODE(uint32_t module_offset) {
     
     //Aplica 0x2 para colocar modulo como enable
     HWREG(addr_prcm) |= 0x2; 
+    return;
 }
 
 void SET_BUZZER(){
@@ -59,7 +66,7 @@ void SET_BUZZER(){
     
     // 3. Inicia o sistema em completo silêncio
     PWM_STOP();
-
+    return;
 }
 
 void PWM_SET_FREQUENCY(uint32_t freq_hz){
@@ -71,6 +78,7 @@ void PWM_SET_FREQUENCY(uint32_t freq_hz){
     
     // Grava o período no registrador de 16 bits
     HWREG_16(SOC_EHRPWM1_REGS + TBPRD) = (unsigned short)valor_tbprd;
+    return;
 }
 
 void PWM_PLAY() {
@@ -79,9 +87,11 @@ void PWM_PLAY() {
     // não importa qual nota (frequência) você esteja tocando!
     unsigned short periodo_atual = HWREG_16(SOC_EHRPWM1_REGS + TBPRD);
     HWREG_16(SOC_EHRPWM1_REGS + CMPA) = periodo_atual / 2;
+    return;
 }
 
 void PWM_STOP() {
     // Zera a largura do pulso (Duty Cycle = 0%)
     HWREG_16(SOC_EHRPWM1_REGS + CMPA) = 0;
+    return;
 }

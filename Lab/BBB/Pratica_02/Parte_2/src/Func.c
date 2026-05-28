@@ -28,12 +28,12 @@ void CONF_DIR(uint32_t pin, uint32_t dir){
 void GPIO1_SET_PIN(uint32_t pin){
     unsigned int addr_temp = SOC_GPIO_1_REGS + GPIO_SETDATAOUT;
     unsigned int val_temp = 1<<pin;
-    HWREG(addr_temp) |= val_temp; //altera o pino especifico
+    HWREG(addr_temp) |= val_temp; 
 }
 
 //Seta o pin como 0 (baixo)
 void GPIO1_CLEAN_PIN(uint32_t pin){
     unsigned int addr_temp = SOC_GPIO_1_REGS + GPIO_CLEANDATAOUT;
     unsigned int val_temp = 1<<pin;
-    HWREG(addr_temp) = val_temp;
+    HWREG(addr_temp) = val_temp;//altera o pino especifico
 }

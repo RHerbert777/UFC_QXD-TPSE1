@@ -17,6 +17,17 @@ Utilizaremos o modulo ePWMCLK_EN para gerar as ondas
 
 CLkSTATUS (0X0C) - Confirmar que o PCRM esta funcionando - FINALIZADO
 
+Utilizando PWM -------------------------------------------------------
+O PWM funciona com base em dois contadores, internamente existe um clock e um contador o teto do contador ate onde
+vai contar é o TBPRD 0 ate o TBPRD quem dara o ritimo e ficara monitorando esse contador é o CMPA uma relação de 50%
+entre esses dois significa que nesse contador ele estara observando o contador quando ele estiver abaixo de 50% manda
+sinal 1 acima de 50% do contador TBPRD zero o TBRD atinge seu pico reinicia a contagem 
+
+Para podermos utilizar precisamos de duas informaçoes:
+TBPRD: Que nos dara o Teto do contador  
+
 Notas ---------------------------------------------------------------
 Para nossa aplicação de bpm precisamos certificar quanto tempo sera o som e quanto tempo sera a pausa usaremos 
 maquina de estados
+
+
