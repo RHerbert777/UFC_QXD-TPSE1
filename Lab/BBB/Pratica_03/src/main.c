@@ -6,8 +6,8 @@
 *  
 */
 #include <stdint.h>
-#include "GPIO_REGS.h"
-#include "GPIO.h"
+
+#include "gpio.h"
 
 int main(){
     //CONFIG WATCH DOG
