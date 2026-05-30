@@ -3,7 +3,6 @@
 * P8 PIN 18 GPIO2_1  BUTTON_1
 * P8 PIN 27 GPIO2_22 BUTTON_2
 * P8 PIN 28 GPIO2_24 LED 
-*  
 */
 #include <stdint.h>
 
