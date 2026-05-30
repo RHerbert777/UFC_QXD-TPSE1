@@ -1,5 +1,4 @@
-#include "BBB_REGS.h"
-#include "Func.h"
+#include "PWM.h"
 #include <stdint.h>
 void delay(volatile unsigned int tempo) {
     while(tempo--) {
@@ -82,9 +81,6 @@ void PWM_SET_FREQUENCY(uint32_t freq_hz){
 }
 
 void PWM_PLAY() {
-    // O pulo do gato: A função lê o período atual e divide por 2.
-    // Assim, o Duty Cycle fica SEMPRE cravado em exatos 50%, 
-    // não importa qual nota (frequência) você esteja tocando!
     unsigned short periodo_atual = HWREG_16(SOC_EHRPWM1_REGS + TBPRD);
     HWREG_16(SOC_EHRPWM1_REGS + CMPA) = periodo_atual / 2;
     return;

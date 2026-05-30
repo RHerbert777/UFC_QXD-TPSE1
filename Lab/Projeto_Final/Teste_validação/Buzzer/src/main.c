@@ -1,10 +1,9 @@
-/* Objetivo utilizar o pwm para gerar uma onda na frequencia alta e baixa 220 440 hertz
-* 
+/*
+* Nenhum pino setado pois a contagem é interna ao procesador
 */
 #include <stdint.h>
 #include <stdio.h>
-#include "BBB_REGS.h"
-#include "Func.h"
+#include "PWM.h"
 
 int main(){
     //CONFIG WATCH DOG

@@ -1,5 +1,7 @@
-#ifndef _BBB_REGS_H_
-#define _BBB_REGS_H_
+#ifndef PWM_H
+#define PWM_H
+#include "BBB_REGS.h"
+#include <stdint.h>
 
 //whach dog timmer DESABILITADO
 #define SOC_WDT_1_REGS (0x44E35000)
@@ -37,7 +39,31 @@
 #define TBPRD    0x0A 
 #define CMPA     0x12 
 #define AQCTLA   0x16
-#define PWM_CLOCK_HZ 0x5F5E100 //converte para exa em outro momento
+#define PWM_CLOCK_HZ 0x5F5E100 
+
+
+
+
+
+
+//Usa procesamente para delay
+void delay(volatile unsigned int tempo);
+
+void disable_wdt(void);
+
+//Ativa o modulo PCRM de um modulo com o offser colocando 2 enable, pode tambem ativar o gpio
+void PRCM_ENABLE_MODE(uint32_t module_offset);
+
+//Configura nosso buzzer 
+void SET_BUZZER();
+
+//Seta a frequencia do buzzer 
+void PWM_SET_FREQUENCY(uint32_t freq_hz);
+
+// pwm_play: Ativa o som (Duty Cycle = 50%)
+void PWM_PLAY(void);
+
+//pwm_stop: Silencia o som (Duty Cycle = 0%)
+void PWM_STOP(void);
 
 #endif
-
