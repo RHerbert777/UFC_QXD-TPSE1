@@ -1,6 +1,5 @@
 #ifndef PWM_H
 #define PWM_H
-#include "BBB_REGS.h"
 #include <stdint.h>
 
 //whach dog timmer DESABILITADO
@@ -34,15 +33,12 @@
 #define PWMSS1_CLKSTATUS   (0x0C)
 
 // DEFINIÇÕES DO EHRPWM1
-#define SOC_EHRPWM1_REGS 0x48302200
-#define TBCTL    0x00 
-#define TBPRD    0x0A 
-#define CMPA     0x12 
-#define AQCTLA   0x16
-#define PWM_CLOCK_HZ 0x5F5E100 
-
-
-
+#define SOC_EHRPWM1_REGS (0x48302200)
+#define TBCTL            (0x00) 
+#define TBPRD            (0x0A) 
+#define CMPA             (0x12) 
+#define AQCTLA           (0x16)
+#define PWM_CLOCK_HZ     (0x5F5E100) 
 
 
 
