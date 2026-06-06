@@ -7,11 +7,9 @@ void disable_wdt(void) {
     unsigned int addr_wwps = SOC_WDT_1_REGS + WDT_WWPS;
 
     HWREG(addr_wspr) = 0xAAAA;
-
     while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
 
     HWREG(addr_wspr) = 0x5555;
-
     while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
 }
 

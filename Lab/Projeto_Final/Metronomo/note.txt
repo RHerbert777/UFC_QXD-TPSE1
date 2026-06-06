@@ -1,0 +1,6 @@
+*Ideia para ser implementada, o botão de set do bpm utilizaremos interupção, ao aperta o o codigo é interompido
+seto o bpm que quero e ao apertar novamente o codigo começa novamente.
+
+*Um pequeno led de power que dira se exite tenção no pcb
+
+*Extruturar os jumpes de forma de linha na porta p8

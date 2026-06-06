@@ -19,19 +19,7 @@ void disable_wdt(void) {
 void AT_MOD(unsigned int MODULO) {
     HWREG(SOC_CM_PER_REGS + MODULO) |= (0x2 << 0);
     
-    while ((HWREG(SOC_CM_PER_REGS + MODULO) & (3 << 16)) != 0) {
-
-    }
-    return;
-}
-
-//Seta a configuração especifica que garante a filtragem do ruido
-void GPIO_DEBOUNCE_ENABLE(unsigned int MODULO) {
-    HWREG(SOC_CM_PER_REGS + MODULO) |= (1 << 18);
-
-    while ((HWREG(SOC_CM_PER_REGS + MODULO) & (1 << 18)) == 0) {
-        // Aguarda a confirmação de hardware
-    }
+    while ((HWREG(SOC_CM_PER_REGS + MODULO) & (3 << 16)) != 0) {}
     return;
 }
 //Configura a Multiplexação do pino
@@ -50,6 +38,24 @@ void CONF_DIR(unsigned int GPIO_BASE, uint32_t pin, uint32_t dir){
     val_temp |= (dir<<pin);
     HWREG(addr_temp) = val_temp;
     return;
+}
+//Seta a capacidade de debounce no pino
+void GPIO_DEBOUNCE_PIN_ENABLE(unsigned int GPIO_BASE, uint8_t pin) {
+    HWREG(GPIO_BASE + GPIO_DEBOUNCENABLE) |= (1 << pin);
+}
+//Seta o tempo do DEBOUNCE
+void GPIO_DEBOUNCE_TIME(unsigned int GPIO_BASE, uint8_t tempo) {
+    HWREG(GPIO_BASE + GPIO_DEBOUNCINGTIME) = tempo;
+}
+
+// Habilita o relógio opcional de Debounce (32 kHz) para o módulo inteiro
+void GPIO_DEBOUNCE_CLOCK_ENABLE(unsigned int MODULO) {
+   
+    HWREG(SOC_CM_PER_REGS + MODULO) |= (1 << 18);
+    
+    while ((HWREG(SOC_CM_PER_REGS + MODULO) & (1 << 18)) == 0) {
+        // Aguarda a confirmação de hardware
+    }
 }
 
 //Seta o pin como 1 (alto)
@@ -76,199 +82,4 @@ uint32_t GPIO_READ_PIN(unsigned int GPIO_BASE, uint32_t pin) {
     } else {
         return 0;
     }
-}
-
-void SEQUENCIA_0_0 (){
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-    
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS,21);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-    
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 21);
-}
-
-void SEQUENCIA_0_1(){
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 21);
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-}
-
-void SEQUENCIA_0_2(){
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 21);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-}
-
-void SEQUENCIA_1_0 (){
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-    
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS,21);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-    GPIO1_SET_PIN  (SOC_GPIO_2_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_2_REGS, 24);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-    
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN  (SOC_GPIO_1_REGS, 21);
-
-}
-
-void SEQUENCIA_1_1 (){
-    GPIO1_SET_PIN(SOC_GPIO_2_REGS, 24);
-    
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-    
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 21);
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_2_REGS, 24);
-}
-
-void SEQUENCIA_1_2 (){
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 21);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_SET_PIN(SOC_GPIO_2_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 21);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 22);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 23);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_1_REGS, 24);
-
-    delay(10000000);
-
-    GPIO1_CLEAN_PIN(SOC_GPIO_2_REGS, 24);
 }
