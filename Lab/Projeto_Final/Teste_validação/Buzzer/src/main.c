@@ -1,5 +1,5 @@
 /*
-* Nenhum pino setado pois a contagem é interna ao procesador
+* P9.14 
 */
 #include <stdint.h>
 #include <stdio.h>

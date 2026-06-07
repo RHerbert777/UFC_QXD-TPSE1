@@ -1,11 +1,13 @@
 #include "PWM.h"
 #include <stdint.h>
+//!delay por laço
 void delay(volatile unsigned int tempo) {
     while(tempo--) {
         // O loop vazio. O compilador não vai apagar isso 
         // porque a variável 'tempo' foi declarada como volatile.
     }
 }
+//!implementar o WDT
 //Desabilita o whach dog timmer 
 void disable_wdt(void) {
     unsigned int addr_wspr = SOC_WDT_1_REGS + WDT_WSPR;

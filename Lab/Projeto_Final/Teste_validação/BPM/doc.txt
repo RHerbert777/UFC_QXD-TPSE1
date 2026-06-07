@@ -1,0 +1,4 @@
+Máquina de Estados Orientada a Timestamps (Marcas de Tempo).
+
+uma batida tem aproximadamente 10 a 30 milisegundos, essa teoria é necesaria para que a nossa batida não se parece
+mais como uma sirene de caminhão

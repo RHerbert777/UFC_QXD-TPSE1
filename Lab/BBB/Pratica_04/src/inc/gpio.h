@@ -24,9 +24,6 @@
 #define CM_CONF_LCD_VSYNC      (0x08E0) 
 #define CM_CONF_LCD_PCLK       (0x08E8)
 
-//DEBOUNCE
-#define GPIO_DEBOUNCENABLE     (0x150)
-#define GPIO_DEBOUNCINGTIME    (0x154)
 //DIREÇÃO
 #define GPIO_OE                (0x134)
 #define GPIO_DATAIN            (0x138)
@@ -62,9 +59,8 @@ void GPIO1_SET_PIN(unsigned int GPIO_BASE, uint32_t pin);
 //Seta o pin como 0 (baixo)
 void GPIO1_CLEAN_PIN(unsigned int GPIO_BASE, uint32_t pin);
 
-void GPIO_DEBOUNCE_PIN_ENABLE(unsigned int GPIO_BASE, uint8_t pin);
-
-void GPIO_DEBOUNCE_TIME(unsigned int GPIO_BASE, uint8_t tempo);
+//Seta o modulo debouce como ANABLE que garante o funcionamento do nosso botão
+void GPIO_DEBOUNCE_ENABLE(unsigned int MODULO);
 
 //Seta a multiplexação do pino, recebe MODE = 0-7 e Modulo a ser setado
 void MUX_CONFIG(uint32_t CONFIG, unsigned int MODULO);
