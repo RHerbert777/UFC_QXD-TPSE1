@@ -9,3 +9,8 @@ XOR (^) / (^=) A = A ^ B
 NOT(~) / (~=) A = ~A
 SHIFT LEFT(<<) / (<<=) A = A << B
 SHIFT RIGHT(>>) / (>>=) A = A >> B
+
+A BBB em relação aos modulos dela funcionam a diversas frequencias a comercial é 1GHz a leitura que nosso codigo C é lido por
+ela, mais ela trabalha a diferentes ciclos o cristal de clock dela gera exatos 24MHz e esse sinal é alterado pelos DPLLs a uart
+trabalha a um ciclo de clock de 48MHz, ja para o nosso modulo de PWM a frequancia é elevada a brutais 100MHz lembrando que em
+fluxo alternado quanto menor a frequancia maior a corente logo ela ira esquentar mais.

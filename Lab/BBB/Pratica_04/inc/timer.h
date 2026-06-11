@@ -12,14 +12,6 @@
 #define WDT_WSPR       (0x48)
 #define WDT_WWPS       (0x34)
 
-//CLOCK 
-#define SOC_PRCM_REGS          (0x44E00000) //PRCM responsavel por mandar energia ao pino
-#define SOC_CM_PER_REGS        (SOC_PRCM_REGS + 0)
-#define CKM_PER_TIMER7_CLKCTRL (0x7C)
-
-//Modulo de controle
-#define SOC_CONTROL_REGS       (0x44E10000)
-
 //modulo de pinos
 #define CM_CONF_GPMC_A5        (0x0854)
 #define CM_CONF_GPMC_A6        (0x0858)
@@ -28,7 +20,7 @@
 #define CM_CONF_GPMC_CLK       (0x088C)
 #define CM_CONF_LCD_VSYNC      (0x08E0) 
 #define CM_CONF_LCD_PCLK       (0x08E8)
-
+#define CM_PER_TIMER7_CLKCTRL  (0x44E0007C)
 // Offsets do Timer 
 #define DMTIMER_TCLR   (0x24)
 #define DMTIMER_TCRR   (0x28)
@@ -48,27 +40,12 @@
 #define DMTIMER_WRITE_POST_TCLR  DMTIMER_TWPS_W_PEND_TCLR
 #define DMTIMER_WRITE_POST_TCRR  DMTIMER_TWPS_W_PEND_TCRR
 
-// Configuração do Clock (24 MHz)
-#define TIMER_1US_COUNT 24
-
 void disable_wdt(void);
-void AT_MOD_PRCM(unsigned int MODULO);
 
-static unsigned int DMTimerWritePostedStatusGet(unsigned int baseAdd);
+void timerSetup(void);
+// Trava a CPU pelo tempo em milissegundos
+void mtimerDelay(uint32_t ms);
 
-void DMTimerCounterSet(unsigned int baseAdd, unsigned int counter);
-
-unsigned int DMTimerCounterGet(unsigned int baseAdd);
-
-void DMTimerEnable(unsigned int baseAdd);
-
-void DMTimerDisable(unsigned int baseAdd);
-
-void uDelay(unsigned int us);
-
-// Macro profissional de barramento (Adaptada da pág. 6)
-#define DMTimerWaitForWrite(reg, baseAdd) \
-    if (HWREG(baseAdd + DMTIMER_TSICR) & DMTIMER_TSICR_POSTED) \
-        while ((reg & DMTimerWritePostedStatusGet(baseAdd)))
+void stimerDelay();
 
 #endif

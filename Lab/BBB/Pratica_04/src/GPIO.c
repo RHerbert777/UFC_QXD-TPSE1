@@ -1,17 +1,7 @@
 #include "gpio.h"
+#include "soc_AM335x.h"
+#include "hw_types.h"
 #include <stdint.h>
-
-//Desabilita o whach dog timmer 
-void disable_wdt(void) {
-    unsigned int addr_wspr = SOC_WDT_1_REGS + WDT_WSPR;
-    unsigned int addr_wwps = SOC_WDT_1_REGS + WDT_WWPS;
-
-    HWREG(addr_wspr) = 0xAAAA;
-    while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
-
-    HWREG(addr_wspr) = 0x5555;
-    while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
-}
 
 //Ativa o Clock no PRCM do modulo
 void AT_MOD(unsigned int MODULO) {
@@ -47,14 +37,14 @@ void CONF_DIR(unsigned int GPIO_BASE, uint32_t pin, uint32_t dir){
 }
 
 //Seta o pin como 1 (alto)
-void GPIO1_SET_PIN(unsigned int GPIO_BASE, uint32_t pin){
+void GPIO_SET_PIN(unsigned int GPIO_BASE, uint32_t pin){
     unsigned int addr_temp = GPIO_BASE + GPIO_SETDATAOUT;
     unsigned int val_temp = 1<<pin;
     HWREG(addr_temp) |= val_temp;
 }
 
 //Seta o pin como 0 (baixo)
-void GPIO1_CLEAN_PIN(unsigned int GPIO_BASE, uint32_t pin){
+void GPIO_CLEAN_PIN(unsigned int GPIO_BASE, uint32_t pin){
     unsigned int addr_temp = GPIO_BASE + GPIO_CLEANDATAOUT;
     unsigned int val_temp = 1<<pin;
     HWREG(addr_temp) = val_temp;//altera o pino especifico

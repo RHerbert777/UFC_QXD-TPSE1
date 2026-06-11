@@ -27,11 +27,11 @@ int main(){
     while (1){
         PWM_PLAY();
         
-        delay(10000000);
+        delay(100000000);
         
         PWM_STOP();
 
-        delay(10000000);
+        delay(100000000);
     }
     
 
