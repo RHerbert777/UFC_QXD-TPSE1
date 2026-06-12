@@ -1,7 +1,5 @@
 /* 
-!pegar o codigo da pratica passada e só alterar para essa pratica 
 * P8.28 GPIO2_24 LED CM_CONF_LCD_PCLK
-*
 */
 
 #include "soc_AM335x.h"

@@ -21,31 +21,19 @@
 #define CM_CONF_LCD_VSYNC      (0x08E0) 
 #define CM_CONF_LCD_PCLK       (0x08E8)
 #define CM_PER_TIMER7_CLKCTRL  (0x44E0007C)
-// Offsets do Timer 
-#define DMTIMER_TCLR   (0x24)
-#define DMTIMER_TCRR   (0x28)
-#define DMTIMER_TLDR   (0x2C)
-#define DMTIMER_TWPS   (0x48)
-#define DMTIMER_TSICR  (0x40)
 
-// Máscaras de Bits
-#define DMTIMER_TCLR_ST       (1 << 0)  // Bit 0 liga/desliga o Timer
-#define DMTIMER_TSICR_POSTED  (1 << 2)  // Bit 2 habilita o modo Posted
+// Offsets internos
+#define DMTIMER_TCLR   0x38  // Registradores de controle
+#define DMTIMER_TCRR   0x3C  // contador
+#define DMTIMER_TLDR   0x40  // recarga
+#define DMTIMER_TWPS   0x48  // status
+#define DMTIMER_TSICR  0x54  //controle modo posted
 
-// Flags de status de gravação pendente (TWPS)
-#define DMTIMER_TWPS_W_PEND_TCLR (1 << 0)
-#define DMTIMER_TWPS_W_PEND_TCRR (1 << 1)
-
-// Macros de verificação do Posted Mode
-#define DMTIMER_WRITE_POST_TCLR  DMTIMER_TWPS_W_PEND_TCLR
-#define DMTIMER_WRITE_POST_TCRR  DMTIMER_TWPS_W_PEND_TCRR
 
 void disable_wdt(void);
 
 void timerSetup(void);
 // Trava a CPU pelo tempo em milissegundos
 void mtimerDelay(uint32_t ms);
-
-void stimerDelay();
 
 #endif

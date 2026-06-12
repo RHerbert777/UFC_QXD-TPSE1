@@ -2,24 +2,6 @@
 #include "uart.h"
 #include "hw_types.h"
 
-// Endereços Absolutíssimos da UART0 e do Control Module (AM335x TRM)
-#define CM_WKUP_UART0_CLKCTRL  (0x44E00400 + 0x00) // Endereço de energia da UART0
-#define SOC_UART_0_REGS        0x44E09000          // Base da UART0
-
-// Registradores do Control Module para Multiplexação (Pinos físicos da placa)
-#define CONTROL_MODULE_BASE    0x44E10000
-#define CONF_UART0_RXD         0x970
-#define CONF_UART0_TXD         0x974
-
-// Registradores internos da UART0
-#define UART_RHR    (0x00)
-#define UART_THR    (0x00)
-#define UART_DLL    (0x00)
-#define UART_DLH    (0x04)
-#define UART_LCR    (0x0C)
-#define UART_MDR1   (0x20)
-#define UART_LSR    (0x14)
-
 void uartSetup(void){
     //Ativar PRCM
     HWREG(CM_WKUP_UART0_CLKCTRL);
@@ -58,7 +40,6 @@ void uartPutString(char *str){
         str++;             
     }
 }
-
 
 //ler o registrador de status UART_LSR se 0 não existe strng se 1 existe string
 uint8_t uartAvailable(void){
