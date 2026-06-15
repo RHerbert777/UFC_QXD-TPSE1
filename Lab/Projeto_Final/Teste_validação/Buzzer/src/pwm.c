@@ -7,7 +7,7 @@ void delay(volatile unsigned int tempo) {
         // porque a variável 'tempo' foi declarada como volatile.
     }
 }
-//!implementar o WDT
+
 //Desabilita o whach dog timmer 
 void disable_wdt(void) {
     unsigned int addr_wspr = SOC_WDT_1_REGS + WDT_WSPR;
