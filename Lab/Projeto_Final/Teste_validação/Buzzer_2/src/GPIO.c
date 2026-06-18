@@ -10,22 +10,13 @@ void AT_MOD(unsigned int MODULO) {
     while ((HWREG(SOC_CM_PER_REGS + MODULO) & (3 << 16)) != 0) {}
 }
 
-//liga a energia do modulo de debounce
-void PRCM_Debounce_Enable(unsigned int offset_clkctrl) {
-    // Liga o bit 18 (OPTFCLKEN_GPIO_x_GDBCLK)
-    HWREG(SOC_CM_PER_REGS + offset_clkctrl) |= (1 << 18);
+//Seta a configuração especifica que garante a filtragem do ruido
+void GPIO_DEBOUNCE_ENABLE(unsigned int MODULO) {
+    HWREG(SOC_CM_PER_REGS + MODULO) |= (1 << 18);
 
-    // Aguarda a confirmação de hardware
-    while ((HWREG(SOC_CM_PER_REGS + offset_clkctrl) & (1 << 18)) == 0);
-}
-//seta o pino especifico de debounce
-void gpioDebounceSetup(uint32_t modulo_gpio, uint8_t pino, uint8_t tempo_debounce) {
-    
-    // 1. Define o tempo de espera (Aplica para todo o módulo)
-    HWREG(modulo_gpio + GPIO_DEBOUNCINGTIME) = tempo_debounce;
-    
-    // 2. Liga o filtro especificamente no pino desejado
-    HWREG(modulo_gpio + GPIO_DEBOUNCENABLE) |= (1 << pino);
+    while ((HWREG(SOC_CM_PER_REGS + MODULO) & (1 << 18)) == 0) {
+        // Aguarda a confirmação de hardware
+    }
 }
 
 //Configura a Multiplexação do pino

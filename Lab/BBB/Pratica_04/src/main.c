@@ -18,7 +18,7 @@ int main(){
     
     CONF_DIR(SOC_GPIO_2_REGS, 24, GPIO_OUTPUT);
     
-        uartPutString("\r\n--------Pratica_04---------\r\n");
+    uartPutString("\r\n--------Pratica_04---------\r\n");
     uartPutString("Tempo declarado em HEARTS, 0,5hz corresponde a 1 segundo\r\n");
     uartPutString("Escolha uma frequencia:\r\n");
     uartPutString("[1]: 0,05hz\r\n");

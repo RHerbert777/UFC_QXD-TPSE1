@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+//whach dog timmer
+#define SOC_WDT_1_REGS (0x44E35000)
+#define WDT_WSPR       (0x48)
+#define WDT_WWPS       (0x34)
+
 //CLOCK 
 #define CKM_PER_GPIO1_CLKCTRL  (0x0AC)
 #define CKM_PER_GPIO2_CLKCTRL  (0xB0)
@@ -21,12 +26,9 @@
 #define GPIO_DATAIN            (0x138)
 #define GPIO_DATAOUT           (0x13C)
 #define GPIO_OUTPUT            (0x000)
-
 //Controle
 #define GPIO_SETDATAOUT        (0x194)
 #define GPIO_CLEANDATAOUT      (0X190)
-#define GPIO_DEBOUNCENABLE     (0x150) // Liga o filtro em um pino específico
-#define GPIO_DEBOUNCINGTIME    (0x154) // Define o tempo do filtro (0 a 255)
 
 //Desabilita o whach dog timmer 
 void disable_wdt(void);
@@ -43,12 +45,8 @@ void GPIO_SET_PIN(unsigned int GPIO_BASE, uint32_t pin);
 //Seta o pin como 0 (baixo)
 void GPIO_CLEAN_PIN(unsigned int GPIO_BASE, uint32_t pin);
 
-//Seta a energia para o periferico de debounce
-void PRCM_Debounce_Enable(unsigned int offset_clkctrl);
-
-//Seta o modulo pino e tempo do debounce aceitando ate 255 que daria por volta de 8milisegunodo
-//Sete o maior tempo posivel 255 
-void gpioDebounceSetup(uint32_t modulo_gpio, uint8_t pino, uint8_t tempo_debounce);
+//Seta o modulo debouce como ANABLE que garante o funcionamento do nosso botão
+void GPIO_DEBOUNCE_ENABLE(unsigned int MODULO);
 
 //Seta a multiplexação do pino, recebe MODE = 0-7 e Modulo a ser setado
 void MUX_CONFIG(uint32_t CONFIG, unsigned int MODULO);
