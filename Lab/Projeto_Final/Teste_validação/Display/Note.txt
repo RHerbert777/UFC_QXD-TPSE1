@@ -1,0 +1,3 @@
+Nosso display TM1637 diferente de outros utiliza uma forma de comunicação sincrona tratando nosso display 
+de 7 segmentos mapeado da forma (Ponto) G F E D C B A se queremos o numero 1 é exatamento a letra C e B ou seja
+0000110 usamos a tecnica de Bit-Banging
