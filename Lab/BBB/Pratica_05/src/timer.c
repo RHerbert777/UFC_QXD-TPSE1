@@ -18,7 +18,7 @@ void disable_wdt(void) {
     while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
 }
 
-void timerSetup(void) {
+void timer_PRCM_Setup(void) {
     //PRCM
     HWREG(PRCM_TIMER7_CLKCTRL) |= 0x02; 
     while ((HWREG(PRCM_TIMER7_CLKCTRL) & 0x03) != 0x02);

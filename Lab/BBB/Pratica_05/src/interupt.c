@@ -50,6 +50,18 @@ void gpioInterruptSetup(uint32_t modulo_gpio, uint8_t pino, uint8_t tipo_gatilho
     }
 }
 
+void timerinteruptsetup(uint32_t modulo_timer){
+    if (modulo_timer == SOC_DMTIMER_7_REGS) {
+        HWREG(SOC_AINTC_REGS + INTC_MIR_CLEAR2) = (1 << 31);
+    }
+    else if (modulo_timer == SOC_DMTIMER_2_REGS) { // SOC_DMTIMER_2_REGS
+        HWREG(SOC_AINTC_REGS + INTC_MIR_CLEAR2) = (1 << 4);
+    }
+    else if (modulo_timer == SOC_DMTIMER_3_REGS) { // SOC_DMTIMER_3_REGS
+        HWREG(SOC_AINTC_REGS + INTC_MIR_CLEAR2) = (1 << 5);
+    }
+}
+
 void delay_ms_interrupt(unsigned int mSec) {
     unsigned int countVal = 0xFFFFFFFF - (mSec * 24000);
 

@@ -39,5 +39,6 @@ void gpioInterruptSetup(uint32_t modulo_gpio, uint8_t pino, uint8_t tipo_gatilho
 void ISR_Handler();
 void delay_ms_interrupt(unsigned int mSec);
 void IntAINTCInit(void);
+void timerinteruptsetup(uint32_t modulo_timer);
 
 #endif

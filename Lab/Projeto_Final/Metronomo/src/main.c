@@ -20,8 +20,8 @@
 * P9.14 
 
 ? DISPLAY
-* CLK 
-* DIO 
+* CLK P9.16 gpmc_a3
+* DIO P9.23 gpmc_a1
 */
 
 int main(){

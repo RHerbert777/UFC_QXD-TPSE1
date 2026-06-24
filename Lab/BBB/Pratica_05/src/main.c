@@ -66,38 +66,33 @@ void desenhar_menu(uint8_t opcao) {
     else           uartPutString("[3]: 100ms\r\n");
 }
 
-
-volatile uint8_t flag_botao_1 = 0;
-volatile uint8_t flag_botao_2 = 0;
-volatile uint8_t flag_timer   = 0;
+volatile uint8_t flag_botao_1 = false;
+volatile uint8_t flag_botao_2 = false;
+volatile uint8_t flag_timer   = false;
 int main(){
-
+    disable_wdt();
     uartSetup();
 
-    disable_wdt();
-    
     AT_MOD(CKM_PER_GPIO1_CLKCTRL);
     AT_MOD(CKM_PER_GPIO2_CLKCTRL);
-    
-    IntAINTCInit();
-
-    HWREG(SOC_AINTC_REGS + INTC_MIR_CLEAR2) = (1 << 31);
-
-    timerSetup();
     
     //interupt BUTTON
     PRCM_Debounce_Enable(CKM_PER_GPIO1_CLKCTRL);
     
     MUX_CONFIG(0x27, CM_conf_gpmc_a0);
     CONF_DIR  (SOC_GPIO_1_REGS, 16, GPIO_INPUT);
-
     gpioDebounceSetup(SOC_GPIO_1_REGS, 16, 255);
 
     MUX_CONFIG(0x27, CM_conf_gpmc_ben1);
     CONF_DIR  (SOC_GPIO_1_REGS, 28, GPIO_INPUT);
-
     gpioDebounceSetup(SOC_GPIO_1_REGS, 28, 255);
-        
+
+    timer_PRCM_Setup();//PRCM timer_7
+    
+    IntAINTCInit(); //ativa o modulo geral de interupção
+
+    timerinteruptsetup(SOC_DMTIMER_7_REGS);//seta interupão do timer 7
+    
     //Led 1
     MUX_CONFIG(MODE_7, CM_conf_gpmc_oen_ren);
     CONF_DIR  (SOC_GPIO_2_REGS, 3, GPIO_OUTPUT);
@@ -122,7 +117,6 @@ int main(){
     while (1){
         // ESTADO 1: MENU ABERTO
         if (menu_ativo == true) {
-            
             //seta do menu
             if (flag_botao_2 == true) {
                 flag_botao_2 = false; // Limpa a flag
@@ -148,24 +142,27 @@ int main(){
         }
         // ESTADO 0: PISCANDO LEDs (Normal)
         else {
+            
+            //sequancia
             if (led_seq == 0){
                 Sequencialed(tempo_led);
             }else{
                 Sequencialed2(tempo_led);
             }
             
-            // Se apertar o Botão 1 ENQUANTO está piscando, abre o menu!
+            //abre o menu
             if (flag_botao_1 == true) {
                 flag_botao_1 = false; // Limpa a flag
-                menu_ativo = true;   // Entra no modo menu
-                desenhar_menu(opcao_atual); // Desenha a primeira vez
+                menu_ativo = true;
+                desenhar_menu(opcao_atual);
             }
             
-            //botão 2 para alternancia da sequencia
+            //Se não tiver menu atualiza modo led
             if (flag_botao_2 == true) {
                 flag_botao_2 = false;
                 
                 led_seq = !led_seq;
+                uartPutString("\r\n>>> Sequencia Atualizada! Retornando...\r\n");
             }
         }
     }
