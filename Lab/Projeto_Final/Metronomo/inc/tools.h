@@ -1,10 +1,16 @@
-#ifndef TOLLS_H
-#define TOLLS_H
+#ifndef TOOLS_H
+#define TOOLS_H
+#include "metronomo.h"
 
-//deve startar todos os perifericos e um menu principal 0000 no display uma pergunta qual a frequencia?
-//com up e do
 void start();
 
+void SET_BPM();
 
+void LED_SIMPLES_ON();
 
+void LED_SIMPLES_OFF();
+
+void Processar_Animacao_Coluna(void);
+
+void APAGAR_TODOS_LEDS_COLUNA(void);
 #endif

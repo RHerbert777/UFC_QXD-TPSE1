@@ -1,28 +1,66 @@
 #include "timer.h"
+#include "metronomo.h"
 
-#define CKM_PER_TIMER7_CLKCTRL 0x7C
+#define WDT_BASE  0x44E35000
+#define WDT_WSPR  0x48
+#define WDT_WWPS  0x34
 
-// Endereços absolutos específicos do Timer 7
-#define PRCM_TIMER7_CLKCTRL  (0x44E00000 + 0x7C)
-#define DPLL_TIMER7_CLKSEL   (0x44E00500 + 0x04)
+void WDT_Espera(uint32_t mascara) {
+    while (HWREG(WDT_WWPS) & mascara);
+}
 
-// Offsets internos
-#define DMTIMER_TCLR   0x38  // Registradores de controle
-#define DMTIMER_TCRR   0x3C  // contador
-#define DMTIMER_TLDR   0x40  // recarga
-#define DMTIMER_TWPS   0x48  // status
-#define DMTIMER_TSICR  0x54  //controle modo posted
+void enable_wdt(uint32_t segundos) {
+    uint32_t ciclos = segundos * 32768; // 32.768 Hz
+    
+    // Calcula de onde o contador deve começar para estourar no tempo certo
+    uint32_t valor_carga = 0xFFFFFFFF - ciclos + 1;
 
-//Desabilita o whach dog timmer 
-void disable_wdt(void) {
-    unsigned int addr_wspr = SOC_WDT_1_REGS + WDT_WSPR;
-    unsigned int addr_wwps = SOC_WDT_1_REGS + WDT_WWPS;
+    WDT_Espera(0x04); // Espera o WLDR liberar
+    HWREG(WDT_WLDR) = valor_carga; //envia valor
+    
+    // 2. A Sequência de Partida (A senha BBBB e 4444)
+    WDT_Espera(0x10); // Espera o WSPR liberar
+    HWREG(WDT_WSPR) = 0xBBBB; //envia as duas outras senhas
+    
+    WDT_Espera(0x10); // Espera o WSPR liberar
+    HWREG(WDT_WSPR) = 0x4444;
+}
 
-    HWREG(addr_wspr) = 0xAAAA;
-    while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
+//função que não deixa o whatch dog resetar
+void feed_wdt(void) {
+    static uint32_t petisco = 0; // Guarda o último valor dado
+    petisco++;
+    
+    WDT_Espera(0x08);    // Espera 
+    HWREG(WDT_WTGR) = petisco;   // Entrega o petisco ao Cão!
+}
 
-    HWREG(addr_wspr) = 0x5555;
-    while ( (HWREG(addr_wwps) & (1 << 4)) != 0 );
+void DESLIGAR_WATCHDOG_DE_FABRICA(void) {
+    // 1ª Senha: Escreve 0xAAAA
+    HWREG(WDT_BASE + WDT_WSPR) = 0xAAAA;
+    
+    // Espera o hardware confirmar a gravação
+    while ((HWREG(WDT_BASE + WDT_WWPS) & (1 << 4)) != 0); 
+    
+    // 2ª Senha: Escreve 0x5555
+    HWREG(WDT_BASE + WDT_WSPR) = 0x5555;
+    
+    // Espera o hardware confirmar a gravação final
+    while ((HWREG(WDT_BASE + WDT_WWPS) & (1 << 4)) != 0); 
+}
+
+void ALIMENTAR_CAO_CONTROLADO(void) {
+    // Usamos 'static' para a variável não morrer quando a função acabar,
+    // guardando a memória de quando foi a última refeição.
+    static uint32_t tempo_ultima_refeicao = 0; 
+
+    // O cão só ganha comida se já passou 1 segundo (1000 ms) desde a última vez!
+    if ((sistema_ms - tempo_ultima_refeicao) >= 1000) {
+        
+        feed_wdt(); // A chamada perigosa agora está enjaulada
+        
+        tempo_ultima_refeicao = sistema_ms; // Atualiza a hora da última refeição
+    }
 }
 
 void timerSetup(void) {

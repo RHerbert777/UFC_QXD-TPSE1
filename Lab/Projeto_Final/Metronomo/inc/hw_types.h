@@ -18,10 +18,9 @@
 //*****************************************************************************
 typedef unsigned char tBoolean;
 
-typedef enum{
-   true = 1,
-   false = 0
-} bool;
+#define bool  _Bool
+#define true  1
+#define false 0
 
 #ifndef NULL
 #define NULL ((void*) 0)

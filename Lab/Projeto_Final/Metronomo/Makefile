@@ -3,6 +3,8 @@ CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
 
+LIBGCC = $(shell arm-none-eabi-gcc -print-libgcc-file-name)
+
 CFLAGS = -mcpu=cortex-a8 -O2 -g -Wall -Iinc
 
 LDFLAGS = -T src/memmap.ld
@@ -24,7 +26,7 @@ obj/%.o: src/%.s
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET).elf: $(OBJS)
-	$(LD) $(LDFLAGS) $^ -o $@
+	$(LD) $(LDFLAGS) $^ -o $@ $(LIBGCC)
 
 $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
