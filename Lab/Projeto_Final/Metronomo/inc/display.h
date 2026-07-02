@@ -2,13 +2,10 @@
 #define DISPLAY_H
 
 #include <stdint.h>
-
 #define TM1637_CLK_PIN 19  // GPIO1_19 (P9_16)
 #define TM1637_DIO_PIN 17  // GPIO1_17 (P9_23)
 
-// ==========================================
 // CONSTANTES DO DISPLAY
-// ==========================================
 #define TM1637_CMD_FIXED_ADDR 0x44  // Comando: Escrever em um endereço específico
 #define TM1637_CMD_DISPLAY_ON 0x8F  // Comando: Ligar tela com brilho máximo (88 a 8F)
 
@@ -27,4 +24,15 @@ void TM1637_Escrever_Digito(uint8_t posicao, uint8_t numero);
 void TM1637_Limpar_Tela(void);
 
 void TM1637_Escrever_Segmentos_Brutos(uint8_t posicao, uint8_t dados_brutos) ;
+
+void TM1637_DisplayOff(void);
+
+uint8_t TM1637_Inverter_Segmentos(uint8_t segmentos);
+
+void TM1637_Escrever_Digito_Invertido(uint8_t posicao_logica, uint8_t valor);
+
+void TM1637_Escrever_Segmentos_Brutos_Invertido(uint8_t posicao, uint8_t segmentos_brutos);
+
+void TM1637_DisplayOn(uint8_t brilho);
+
 #endif

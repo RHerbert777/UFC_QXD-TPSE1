@@ -22,11 +22,10 @@
 #define DMTIMER_TLDR           (0x40)  // recarga
 #define DMTIMER_TWPS           (0x48)  // status
 #define DMTIMER_TSICR          (0x54)  //controle modo posted
+
 // Endereços específicos do Timer 7
 #define PRCM_TIMER7_CLKCTRL  (0x44E00000 + 0x7C)
 #define DPLL_TIMER7_CLKSEL   (0x44E00500 + 0x04)
-
-void timer_PRCM_Setup(void);
 
 void timerSetup(void);
 

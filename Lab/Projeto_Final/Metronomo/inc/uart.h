@@ -30,4 +30,5 @@ void uartPutString(char *str);
 uint8_t uartAvailable(void); //flag que verifica teclado
 char uartGetChar(void);
 
+void uartPutNumber(uint32_t num);
 #endif

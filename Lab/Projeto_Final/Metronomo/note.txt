@@ -1,6 +1,12 @@
-*Ideia para ser implementada, o botão de set do bpm utilizaremos interupção, ao aperta o o codigo é interompido
-seto o bpm que quero e ao apertar novamente o codigo começa novamente.
+PWM: TBCTR inicia a contagem, pino em baixo chegamos no CMPA configurmaos o dutycicle para tempo/2 logo andaremos mais
+metade do tempo em sinal alto ao chegar no topo resetamos a contagem finalizando o periodo, se reduzirmos o TBCTR conse-
+quentemente almentamos a frequencia.
 
-*Um pequeno led de power que dira se exite tenção no pcb
+TBCTR:  Contador
+TBPRD:  Teto contagem
+CMPA:   conter compare- configuração do durycicle.
 
-*Extruturar os jumpes de forma de linha na porta p8
+AQCTLA: Diz o comportamento da onda.
+TBCTL:  tipo de contagem crescente decrescente
+
+Display:

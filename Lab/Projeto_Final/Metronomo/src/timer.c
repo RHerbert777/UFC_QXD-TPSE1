@@ -11,18 +11,16 @@ void WDT_Espera(uint32_t mascara) {
 
 void enable_wdt(uint32_t segundos) {
     uint32_t ciclos = segundos * 32768; // 32.768 Hz
-    
-    // Calcula de onde o contador deve começar para estourar no tempo certo
+
     uint32_t valor_carga = 0xFFFFFFFF - ciclos + 1;
 
-    WDT_Espera(0x04); // Espera o WLDR liberar
-    HWREG(WDT_WLDR) = valor_carga; //envia valor
+    WDT_Espera(0x04);
+    HWREG(WDT_WLDR) = valor_carga;
     
-    // 2. A Sequência de Partida (A senha BBBB e 4444)
-    WDT_Espera(0x10); // Espera o WSPR liberar
-    HWREG(WDT_WSPR) = 0xBBBB; //envia as duas outras senhas
+    WDT_Espera(0x10); 
+    HWREG(WDT_WSPR) = 0xBBBB;
     
-    WDT_Espera(0x10); // Espera o WSPR liberar
+    WDT_Espera(0x10);
     HWREG(WDT_WSPR) = 0x4444;
 }
 
@@ -49,9 +47,8 @@ void DESLIGAR_WATCHDOG_DE_FABRICA(void) {
     while ((HWREG(WDT_BASE + WDT_WWPS) & (1 << 4)) != 0); 
 }
 
+//Alimenta o whach dog de forma controlada
 void ALIMENTAR_CAO_CONTROLADO(void) {
-    // Usamos 'static' para a variável não morrer quando a função acabar,
-    // guardando a memória de quando foi a última refeição.
     static uint32_t tempo_ultima_refeicao = 0; 
 
     // O cão só ganha comida se já passou 1 segundo (1000 ms) desde a última vez!
@@ -103,6 +100,3 @@ void mtimerDelay(uint32_t ms) {
     while (HWREG(SOC_DMTIMER_7_REGS + DMTIMER_TWPS) & (1 << 0));
     HWREG(SOC_DMTIMER_7_REGS + DMTIMER_TCLR) &= ~(1 << 0);
 }
-//Uma ideia interesante é implementar timeout em codigos que podem entrar em loop um temp com um numero grande ele
-//decrementando toda vez que entrar se ele decrementar muito e o codigo não tiver sido executado significa erro demorou
-//muito tempo em no while retorna um erro 

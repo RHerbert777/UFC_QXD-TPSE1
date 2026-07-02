@@ -21,17 +21,24 @@ int main(){
     SET_BUZZER();
 
     //Setando frequancia do buzzer
-    PWM_SET_FREQUENCY(440);
-
+    
     //Controle
     while (1){
+        PWM_SET_FREQUENCY(440);
+
         PWM_PLAY();
         
-        delay(100000000);
+        delay(1000000);
         
         PWM_STOP();
 
-        delay(100000000);
+        delay(1000000);
+
+        PWM_SET_FREQUENCY(220);
+        PWM_PLAY();
+
+        delay(1000000);
+        PWM_STOP();
     }
     
 

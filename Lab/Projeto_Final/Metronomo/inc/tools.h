@@ -4,6 +4,10 @@
 
 void start();
 
+void Dispaly_test();
+
+void LEDs_test();
+
 void SET_BPM();
 
 void LED_SIMPLES_ON();
@@ -13,4 +17,5 @@ void LED_SIMPLES_OFF();
 void Processar_Animacao_Coluna(void);
 
 void APAGAR_TODOS_LEDS_COLUNA(void);
+
 #endif

@@ -1,9 +1,12 @@
 #include "display.h"
 #include "gpio.h"
 #include "soc_AM335x.h"
-// ========================================================
+
+//Pinos definidos DIO e CLK
+#define CLK_PIN CM_conf_gpmc_a3
+#define DIO_PIN CM_conf_gpmc_a1
+
 // TABELA DE TRADUÇÃO (Números de 0 a 9)
-// ========================================================
 const uint8_t codigo_numeros[] = {
     0x3F, // 0
     0x06, // 1
@@ -17,19 +20,13 @@ const uint8_t codigo_numeros[] = {
     0x6F  // 9
 };
 
-//Pinos de DIO e CLK
-#define CLK_PIN CM_conf_gpmc_a3    // P9_16 = GPIO1_19 (GPMC_A3) - CLK
-#define DIO_PIN CM_conf_gpmc_a1    // P9_23 = GPIO1_17 (GPMC_A1) - DIO
-
+//Micro delay por garantia
 void delay_micros() {
     for(volatile int i = 0; i < 500; i++); 
 }
 
+//Inicializa o modulo TM1637 com clk e dio definidos como alto
 void TM1637_Init(void) {
-    // Atenção ao DIO (P9_23): Como ele é bidirecional e o display vai 
-    // tentar "falar" de volta com a BeagleBone, precisamos do ouvido ligado!
-    // Lembra do nosso vilão de hoje mais cedo? RX_ACTIVE ativado (0x27)!
-    
     MUX_CONFIG(0x7, CLK_PIN); 
     
     MUX_CONFIG(0x27, DIO_PIN); 
@@ -41,11 +38,14 @@ void TM1637_Init(void) {
     // 3. ESTADO DE REPOUSO (Ambos em 1 / 3.3V)
     GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
     GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_DIO_PIN);
+
+    delay_micros();
+    TM1637_DisplayOn(7);
 }
 
+// A regra de START do protocolo: 
+// Com o CLK em ALTO, o pino DIO sofre uma queda para BAIXO.
 void TM1637_Start(void) {
-    // A regra de START do protocolo: 
-    // Com o CLK em ALTO, o pino DIO sofre uma queda para BAIXO.
     
     GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
     GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_DIO_PIN);
@@ -59,9 +59,9 @@ void TM1637_Start(void) {
 }
 
 
+// A regra de STOP do protocolo:
+// Com o CLK em ALTO, o pino DIO sofre uma subida para ALTO.
 void TM1637_Stop(void) {
-    // A regra de STOP do protocolo:
-    // Com o CLK em ALTO, o pino DIO sofre uma subida para ALTO.
     
     GPIO_CLEAN_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
     GPIO_CLEAN_PIN(SOC_GPIO_1_REGS, TM1637_DIO_PIN);
@@ -79,11 +79,11 @@ void TM1637_Escrever_Byte(uint8_t dado) {
     // Laço para enviar os 8 bits, do menos significativo (LSB) para o mais (MSB)
     for (int i = 0; i < 8; i++) {
         
-        // 1. Abaixa o Relógio (Prepara para trocar o valor do fio de dados)
+        // Abaixa o Relógio (Prepara para trocar o valor do fio de dados)
         GPIO_CLEAN_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
         delay_micros();
         
-        // 2. Coloca 0 ou 1 no DIO, dependendo do último bit da variável 'dado'
+        // Coloca 0 ou 1 no DIO, dependendo do último bit da variável 'dado'
         if (dado & 0x01) {
             GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_DIO_PIN);
         } else {
@@ -91,17 +91,15 @@ void TM1637_Escrever_Byte(uint8_t dado) {
         }
         delay_micros();
         
-        // 3. Sobe o Relógio (Dá o "tique" pro display ler o fio)
+        // Sobe o Relógio (Dá o "tique" pro display ler o fio)
         GPIO_SET_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
         delay_micros();
         
-        // 4. Empurra a variável para a direita para expor o próximo bit na próxima volta
+        // Empurra a variável para a direita para expor o próximo bit na próxima volta
         dado = dado >> 1; 
     }
     
-    // ==========================================
-    // O 9º PULSO: Lendo o ACK (Acknowledge)
-    // ==========================================
+    // 9º PULSO: Lendo o ACK (Acknowledge)
     // Abaixa o clock
     GPIO_CLEAN_PIN(SOC_GPIO_1_REGS, TM1637_CLK_PIN);
     
@@ -121,26 +119,21 @@ void TM1637_Escrever_Byte(uint8_t dado) {
     delay_micros();
 }
 
+//Escreve segmentos brutos de dados
 void TM1637_Escrever_Segmentos_Brutos(uint8_t posicao, uint8_t dados_brutos) {
-    // 1. Comando de Dados: Configura o display para modo de "Endereço Fixo"
+    //Configura o display para modo de "Endereço Fixo"
     TM1637_Start();
     TM1637_Escrever_Byte(0x44); 
     TM1637_Stop();
 
-    // 2. Envio do Dado Bruto para a posição específica
+    // Envio do Dado Bruto para a posição específica
     TM1637_Start();
-    // O endereço base dos 4 dígitos no registrador do TM1637 é 0xC0. 
-    // Somamos a posição (0 a 3) para ir pro dígito exato.
     TM1637_Escrever_Byte(0xC0 + posicao); 
-    
-    // Injeta a máscara de bits crua direto nos LEDs!
     TM1637_Escrever_Byte(dados_brutos);   
     TM1637_Stop();
 }
 
-// ========================================================
 // ESCREVER UM NÚMERO NA TELA (0 a 9)
-// ========================================================
 void TM1637_Escrever_Digito(uint8_t posicao, uint8_t numero) {
     uint8_t codigo_segmento;
 
@@ -151,30 +144,104 @@ void TM1637_Escrever_Digito(uint8_t posicao, uint8_t numero) {
         codigo_segmento = 0x00; // 0x00 significa todos os LEDs apagados
     }
 
-    // 1º CARTA: Configuração de Endereço Fixo
+    //Configuração de Endereço Fixo
     TM1637_Start();
     TM1637_Escrever_Byte(TM1637_CMD_FIXED_ADDR);
     TM1637_Stop();
 
-    // 2º CARTA: Endereço do Dígito + O Valor (Ex: 0xC0 e o valor 0x06 para o '1')
+    //Endereço do Dígito + O Valor
     TM1637_Start();
     TM1637_Escrever_Byte(posicao);
     TM1637_Escrever_Byte(codigo_segmento);
     TM1637_Stop();
 
-    // 3º CARTA: Ligar Tela e Ajustar Brilho
+    //Ligar Tela e Ajustar Brilho
+    TM1637_DisplayOn(7);
+}
+
+// APAGAR TELA COMPLETA
+void TM1637_Limpar_Tela(void) {
+    //Envia o comando de Escrita de Dados com auto-incremento (0x40)
     TM1637_Start();
-    TM1637_Escrever_Byte(TM1637_CMD_DISPLAY_ON);
+    TM1637_Escrever_Byte(0x40); 
+    TM1637_Stop();
+
+    // Define o endereço inicial apontando para o 1º dígito (0xC0)
+    TM1637_Start();
+    TM1637_Escrever_Byte(0xC0); 
+    
+    //Envia o "Vazio" (0x00) sequencialmente para as 4 posições
+    TM1637_Escrever_Byte(0x00); // Apaga o 1º dígito
+    TM1637_Escrever_Byte(0x00); // Apaga o 2º dígito
+    TM1637_Escrever_Byte(0x00); // Apaga o 3º dígito
+    TM1637_Escrever_Byte(0x00); // Apaga o 4º dígito
+    
     TM1637_Stop();
 }
 
-// ========================================================
-// APAGAR TELA COMPLETA
-// ========================================================
-void TM1637_Limpar_Tela(void) {
-    // Manda um "número falso" (10) para todos os dígitos apagarem
-    TM1637_Escrever_Digito(TM1637_POS_1, 10);
-    TM1637_Escrever_Digito(TM1637_POS_2, 10);
-    TM1637_Escrever_Digito(TM1637_POS_3, 10);
-    TM1637_Escrever_Digito(TM1637_POS_4, 10);
+//Desliga completamente o display
+void TM1637_DisplayOff(void) {
+    TM1637_Start();
+    // O comando 0x80 desliga a tela (0x88 a 0x8F liga a tela definindo o brilho)
+    TM1637_Escrever_Byte(0x80); 
+    TM1637_Stop();
+}
+
+// Liga o display e define o brilho (0 = Mínimo, 7 = Máximo)
+void TM1637_DisplayOn(uint8_t brilho) {
+    // Trava de segurança: garante que o brilho não passe de 7
+    if (brilho > 7) brilho = 7; 
+    
+    TM1637_Start();
+    // O comando base para ligar é 0x88. Somando o brilho, vamos de 0x88 a 0x8F
+    TM1637_Escrever_Byte(0x88 + brilho); 
+    TM1637_Stop();
+}
+
+//Logica para display invertido =======================================================
+
+// Função que gira qualquer número ou letra do TM1637 de cabeça para baixo
+uint8_t TM1637_Inverter_Segmentos(uint8_t segmentos) {
+    uint8_t invertido = 0;
+    
+    if (segmentos & 0x01) invertido |= 0x08; // Segmento A vira D
+    if (segmentos & 0x02) invertido |= 0x10; // Segmento B vira E
+    if (segmentos & 0x04) invertido |= 0x20; // Segmento C vira F
+    if (segmentos & 0x08) invertido |= 0x01; // Segmento D vira A
+    if (segmentos & 0x10) invertido |= 0x02; // Segmento E vira B
+    if (segmentos & 0x20) invertido |= 0x04; // Segmento F vira C
+    if (segmentos & 0x40) invertido |= 0x40; // Segmento G (Meio) continua G
+    
+    return invertido;
+}
+
+void TM1637_Escrever_Digito_Invertido(uint8_t posicao_logica, uint8_t valor) {
+    uint8_t desenho_original = codigo_numeros[valor];
+    uint8_t desenho_invertido = TM1637_Inverter_Segmentos(desenho_original);
+
+    //Inverte o Eixo X: O que deveria ir para a direita, vai para a esquerda
+    uint8_t posicao_fisica;
+    if (posicao_logica      == TM1637_POS_1) posicao_fisica = TM1637_POS_4;
+    else if (posicao_logica == TM1637_POS_2) posicao_fisica = TM1637_POS_3;
+    else if (posicao_logica == TM1637_POS_3) posicao_fisica = TM1637_POS_2;
+    else if (posicao_logica == TM1637_POS_4) posicao_fisica = TM1637_POS_1;
+    else posicao_fisica = posicao_logica;
+
+    // Comunica com o hardware usando os comandos originais
+    TM1637_Start();
+    TM1637_Escrever_Byte(posicao_fisica);
+    TM1637_Escrever_Byte(desenho_invertido);
+    TM1637_Stop();
+}
+
+void TM1637_Escrever_Segmentos_Brutos_Invertido(uint8_t posicao, uint8_t segmentos_brutos) {
+    //Inverte o eixo Y (Gira o desenho 180 graus)
+    uint8_t segmentos_corrigidos = TM1637_Inverter_Segmentos(segmentos_brutos);
+
+    //Inverte o eixo X (Tradução da Posição Lógica para Física)
+    
+    uint8_t posicao_fisica = 3 - posicao; 
+
+    //Envia para o hardware usando a sua função original
+    TM1637_Escrever_Segmentos_Brutos(posicao_fisica, segmentos_corrigidos);
 }

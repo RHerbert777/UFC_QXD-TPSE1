@@ -1,9 +1,19 @@
 #include "pwm.h"
 #include "gpio.h"
 
+//Ativa o modulo PCRM de um modulo com o offser colocando 2 enable
+void PRCM_ENABLE_MODE(uint32_t module_offset) {
+    unsigned int addr_prcm = SOC_CM_PER_REGS + module_offset;
+
+    HWREG(addr_prcm) |= 0x2; 
+
+    while ((HWREG(addr_prcm) & 0x30000) != 0);
+    return;
+}
+
+//Setamos o PWM pasando o modulo do pwm que será configurado
 void SET_BUZZER(uint32_t module_offset){
     unsigned int addr_prcm = SOC_CM_PER_REGS + module_offset;
-    HWREG(addr_prcm) |= 0x2; 
 
     //SYSCONFIG -------------------------------------------------------------
     unsigned int addr_temp = SOC_PWMSS1_REGS + PWMSS1_SYSCONFIG;
@@ -33,31 +43,26 @@ void SET_BUZZER(uint32_t module_offset){
 
     HWREG(SOC_CONTROL_REGS + PWMSS_CTRL) |= (1 << 1);//Liberando a trava
 
-    // 1. Configura a regra da onda: 
+    // Configura a regra da onda: 
     // Sobe para 3.3V quando zerar, cai para 0V quando empatar com o CMPA
     HWREGH(SOC_EHRPWM1_REGS + AQCTLA) = 0x0012;
 
-    // 2. Configura o contador para o modo Crescente (Up-Count)
+    // Configura o contador para o modo Crescente (Up-Count)
     HWREGH(SOC_EHRPWM1_REGS + TBCTL) = 0x0000;
     
-    // 3. Inicia o sistema em completo silêncio
+    // Inicia o sistema em completo silêncio
     PWM_STOP();
 }
-
+//seta a frequencia em hz 
 void PWM_SET_FREQUENCY(uint32_t freq_hz){
-    // Trava 1: Previne a divisão por zero (Explosão da CPU)
+    //evita divisão por zero
     if (freq_hz == 0) return;
 
     // A CPU calcula o teto com 32 bits livremente
     uint32_t valor_tbprd = PWM_CLOCK_HZ / freq_hz;
     
-    if (valor_tbprd > 65535) {
-        valor_tbprd = 65535; 
-    }
-    
-    // Agora o cast para (unsigned short) é 100% seguro, pois garantimos
-    // que o valor nunca ultrapassará os 16 bits!
     HWREGH(SOC_EHRPWM1_REGS + TBPRD) = (unsigned short)valor_tbprd;
+
     return;
 }
 

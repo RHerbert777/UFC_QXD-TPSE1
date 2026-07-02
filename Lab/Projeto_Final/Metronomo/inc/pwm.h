@@ -22,6 +22,8 @@
 #define AQCTLA           (0x16)
 #define PWM_CLOCK_HZ     (0x5F5E100) 
 
+void PRCM_ENABLE_MODE(uint32_t module_offset);
+
 //Configura o BUZZER recebe o modulo do PRCM do buzzer
 void SET_BUZZER(uint32_t module_offset);
 

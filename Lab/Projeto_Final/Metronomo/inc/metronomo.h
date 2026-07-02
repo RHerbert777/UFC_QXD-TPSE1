@@ -2,7 +2,6 @@
 #define METRONOMO_H
 
 #include <stdint.h>
-
 #include "control_module.h"
 #include "display.h"
 #include "gpio.h"
@@ -45,5 +44,7 @@ extern volatile bool ordem_CORTE;
 extern volatile bool som_esta_ativo;
 
 extern volatile uint8_t modo_visual;
+
+#define CM_CONF_GPMC_A2 (0x848) //configuração necesaria para o mux do buzzer
 
 #endif

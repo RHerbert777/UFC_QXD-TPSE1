@@ -54,3 +54,20 @@ uint8_t uartAvailable(void){
 char uartGetChar(void){
     return (char)HWREG(SOC_UART_0_REGS + UART_RHR);
 }
+
+void uartPutNumber(uint32_t num) {
+    if (num == 0) {
+        uartPutString("0");
+        return;
+    }
+    char buffer[12]; // Suporta até 4 bilhões (32 bits)
+    int i = 10;
+    buffer[11] = '\0';
+    
+    while (num > 0 && i >= 0) {
+        buffer[i] = (num % 10) + '0'; // Pega o último dígito e vira texto
+        num /= 10;
+        i--;
+    }
+    uartPutString(&buffer[i + 1]);
+}

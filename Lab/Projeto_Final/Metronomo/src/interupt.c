@@ -75,7 +75,6 @@ void gpioInterruptSetup(uint32_t modulo_gpio, uint8_t pino, uint8_t tipo_gatilho
     }
 }
 
-
 void Timer7_Start_System_Tick(void) {
     // =======================================================
     // 1. CONFIGURAÇÃO DE ENERGIA E RELÓGIO (PRCM)
@@ -85,9 +84,9 @@ void Timer7_Start_System_Tick(void) {
 
     while ((HWREG(SOC_CM_PER_REGS + CM_PER_TIMER7_CLKCTRL) & 0x30000) != 0);
 
-    // Conecta o Timer 7 ao Cristal de 24 MHz (CLK_M_OSC = 0x2)
+    // Conecta o Timer 7 ao Cristal de 24 MHz (CLK_M_OSC = 0x1)
     // Isso garante que a matemática de 24.000 tiques por ms funcione perfeitamente!
-    HWREG(SOC_CM_DPLL_REGS + CLKSEL_TIMER7_CLK) = 0x2;
+    HWREG(SOC_CM_DPLL_REGS + CLKSEL_TIMER7_CLK) = 0x1;
 
     // =======================================================
     // 2. CONFIGURAÇÃO DO TEMPO E AUTO-RELOAD
